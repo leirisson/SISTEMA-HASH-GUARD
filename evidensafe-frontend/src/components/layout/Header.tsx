@@ -4,7 +4,7 @@ import { Input } from '../ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Badge } from '../ui/badge';
 import { ThemeToggle } from '../ui/theme-toggle';
-import { useAuthStore } from '../../store/authStore';
+import { useAuthStore } from '../../stores/authStore';
 
 interface HeaderProps {
   onMenuClick: () => void;
