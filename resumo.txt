@@ -1,0 +1,268 @@
+===============================================================================
+                            RESUMO DA API HASHGUARD
+===============================================================================
+
+📋 INFORMAÇÕES GERAIS
+===============================================================================
+Nome: HashGuard API
+Versão: 1.0.0
+Descrição: Sistema para preservação e verificação de evidências digitais
+Framework: NestJS 10.x
+Linguagem: TypeScript
+Banco de Dados: SQLite (via Prisma ORM)
+Porta: 3000
+Documentação: http://localhost:3000/api/docs (Swagger)
+
+🏗️ ARQUITETURA E MÓDULOS
+===============================================================================
+A API está estruturada em módulos independentes seguindo padrões NestJS:
+
+1. AppModule (Principal)
+   - Configuração global da aplicação
+   - Integração de todos os módulos
+   - Configuração do Multer para upload de arquivos
+
+2. EvidenceModule
+   - Gerenciamento de evidências digitais
+   - Upload e armazenamento de arquivos
+   - Extração de metadados EXIF
+
+3. HashModule
+   - Geração e validação de hashes SHA-256
+   - Verificação de integridade de arquivos
+
+4. SignatureModule
+   - Assinatura digital usando PGP/OpenPGP
+   - Geração automática de pares de chaves RSA 4096-bit
+   - Verificação de autenticidade
+
+5. TimestampModule
+   - Carimbos de tempo via OpenTimestamps
+   - Prova temporal na blockchain Bitcoin
+   - Verificação de timestamps
+
+6. CustodyModule
+   - Cadeia de custódia completa
+   - Rastreamento de todas as ações
+   - Validação de integridade da cadeia
+
+7. VerificationModule
+   - Verificação completa de evidências
+   - Cálculo de pontuação de confiança
+   - Geração de relatórios de verificação
+
+8. MetadataModule
+   - Extração de metadados EXIF
+   - Análise de propriedades de arquivos
+
+9. PrismaModule
+   - Conexão com banco de dados
+   - ORM para operações de dados
+
+📊 BANCO DE DADOS
+===============================================================================
+Schema Principal:
+
+Evidence (Evidências)
+- id: UUID único
+- filename: Nome do arquivo original
+- path: Caminho no sistema de arquivos
+- hash: Hash SHA-256 único
+- exif: Metadados EXIF (JSON)
+- collectedBy: Responsável pela coleta
+- collectedAt: Data/hora da coleta
+- timestampFile: Arquivo de timestamp (.ots)
+- signatureFile: Arquivo de assinatura (.sig)
+- publicKey: Chave pública PGP
+- createdAt/updatedAt: Timestamps do sistema
+
+CustodyLog (Cadeia de Custódia)
+- id: UUID único
+- evidenceId: Referência à evidência
+- action: Tipo de ação (COLLECTED, STORED, ANALYZED, etc.)
+- actor: Responsável pela ação
+- details: Detalhes adicionais (JSON)
+- createdAt: Timestamp da ação
+
+🌐 ENDPOINTS DA API
+===============================================================================
+
+EVIDÊNCIAS (/evidence)
+- POST /evidence/upload
+  * Upload de evidência digital
+  * Suporte a multipart/form-data
+  * Limite: 100MB por arquivo
+  * Campos: file, collectedBy, collectedAt, description
+
+- GET /evidence
+  * Listar todas as evidências
+  * Paginação: ?page=1&limit=10
+
+- GET /evidence/id/:id
+  * Buscar evidência por ID UUID
+
+- GET /evidence/hash/:hash
+  * Buscar evidência por hash SHA-256
+
+- GET /evidence/:id/verify
+  * Verificar integridade da evidência
+
+VERIFICAÇÃO (/verification)
+- POST /verification/:id/complete
+  * Verificação completa (hash, assinatura, timestamp, custódia)
+  * Pontuação de confiança 0-100%
+  * Relatório detalhado com recomendações
+
+- GET /verification/:id/quick
+  * Verificação rápida apenas do hash
+  * Resposta otimizada para performance
+
+- GET /verification/:id/status
+  * Status atual da evidência para verificação
+
+CADEIA DE CUSTÓDIA (/custody)
+- GET /custody/evidence/:evidenceId
+  * Recuperar cadeia completa de uma evidência
+  * Histórico cronológico de ações
+
+- GET /custody/evidence/:evidenceId/report
+  * Relatório completo de custódia
+  * Estatísticas e resumo executivo
+
+- GET /custody/evidence/:evidenceId/validate
+  * Validar integridade da cadeia
+  * Detecção de inconsistências
+
+- GET /custody/actor/:actor
+  * Logs por responsável/ator
+
+- GET /custody/action/:action
+  * Logs por tipo de ação
+
+SISTEMA
+- GET /health
+  * Health check da aplicação
+  * Status: ok, timestamp, service info
+
+🔒 RECURSOS DE SEGURANÇA
+===============================================================================
+
+1. INTEGRIDADE DE DADOS
+   - Hash SHA-256 para cada arquivo
+   - Verificação automática de integridade
+   - Detecção de alterações não autorizadas
+
+2. AUTENTICIDADE
+   - Assinatura digital PGP/OpenPGP
+   - Chaves RSA 4096-bit
+   - Geração automática de pares de chaves
+   - Verificação de autenticidade
+
+3. PROVA TEMPORAL
+   - Timestamps via OpenTimestamps
+   - Ancoragem na blockchain Bitcoin
+   - Prova criptográfica de existência temporal
+
+4. CADEIA DE CUSTÓDIA
+   - Registro imutável de todas as ações
+   - Rastreabilidade completa
+   - Validação de integridade da cadeia
+   - Auditoria forense
+
+5. VALIDAÇÃO DE DADOS
+   - Pipes de validação globais
+   - Sanitização de entrada
+   - Whitelist de propriedades
+   - Transformação automática de tipos
+
+6. CONFIGURAÇÃO SEGURA
+   - Variáveis de ambiente para dados sensíveis
+   - Chaves PGP protegidas por passphrase
+   - Configuração CORS restritiva
+
+📁 ARMAZENAMENTO DE ARQUIVOS
+===============================================================================
+- Diretório: ./uploads (configurável via UPLOAD_PATH)
+- Nomenclatura: file-{timestamp}-{uuid}.{extensão}
+- Limite de tamanho: 100MB (configurável via MAX_FILE_SIZE)
+- Tipos suportados: Todos os formatos de arquivo
+- Metadados EXIF extraídos automaticamente
+
+🔧 CONFIGURAÇÕES PRINCIPAIS
+===============================================================================
+Variáveis de Ambiente (.env):
+- DATABASE_URL: Conexão com banco de dados
+- PORT: Porta da aplicação (padrão: 3000)
+- UPLOAD_PATH: Diretório de uploads (padrão: ./uploads)
+- MAX_FILE_SIZE: Tamanho máximo de arquivo (padrão: 104857600)
+- PGP_PRIVATE_KEY_PATH: Caminho da chave privada PGP
+- PGP_PUBLIC_KEY_PATH: Caminho da chave pública PGP
+- PGP_PASSPHRASE: Passphrase das chaves PGP
+- CORS_ORIGIN: Origens permitidas para CORS
+- SWAGGER_TITLE: Título da documentação
+- SWAGGER_DESCRIPTION: Descrição da API
+- SWAGGER_VERSION: Versão da documentação
+- SWAGGER_PATH: Caminho da documentação (padrão: api/docs)
+
+📈 FUNCIONALIDADES AVANÇADAS
+===============================================================================
+
+1. VERIFICAÇÃO COMPLETA
+   - Análise multi-camada de evidências
+   - Pontuação de confiança algorítmica
+   - Relatórios detalhados com recomendações
+   - Detecção automática de problemas
+
+2. RELATÓRIOS FORENSES
+   - Cadeia de custódia completa
+   - Estatísticas de manipulação
+   - Validação de integridade
+   - Exportação de dados
+
+3. METADADOS AVANÇADOS
+   - Extração EXIF completa
+   - Informações de dispositivo
+   - Dados de localização (GPS)
+   - Timestamps originais
+
+4. AUDITORIA E COMPLIANCE
+   - Logs imutáveis de todas as ações
+   - Rastreabilidade completa
+   - Conformidade forense
+   - Prova legal de integridade
+
+🚀 STATUS ATUAL
+===============================================================================
+✅ Aplicação rodando na porta 3000
+✅ Banco de dados conectado (SQLite)
+✅ Documentação Swagger disponível
+✅ Upload de arquivos funcionando
+✅ Geração automática de chaves PGP
+✅ Todos os módulos integrados
+✅ Validação e sanitização ativas
+✅ CORS configurado
+✅ Health check ativo
+
+📚 DOCUMENTAÇÃO TÉCNICA
+===============================================================================
+- Swagger UI: http://localhost:3000/api/docs
+- Schemas de validação: class-validator + class-transformer
+- ORM: Prisma Client
+- Testes: Jest (configurado)
+- Linting: ESLint + Prettier
+- Build: TypeScript + Nest CLI
+
+🔄 SCRIPTS DISPONÍVEIS
+===============================================================================
+- npm run start:dev: Desenvolvimento com hot-reload
+- npm run start:prod: Produção
+- npm run build: Build da aplicação
+- npm run test: Executar testes
+- npm run lint: Linting do código
+- npm run prisma:generate: Gerar cliente Prisma
+- npm run prisma:push: Sincronizar schema
+- npm run prisma:studio: Interface visual do banco
+
+===============================================================================
+                        RESUMO GERADO EM: 2025-01-10
+===============================================================================

@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  SUPER
+  ADMIN
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  username  String   @unique
+  password  String
+  role      Role     @default(USER)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relacionamento com Evidence (quem coletou)
+  evidences Evidence[]
+
+  // Relacionamento com CustodyLog (quem executou a ação)
+  custodyLogs CustodyLog[]
+
+  @@map("users")
+}
+
+model Evidence {
+  id            String   @id @default(uuid())
+  filename      String
+  path          String
+  hash          String   @unique
+  exif          Json?
+  collectedBy   String
+  collectedAt   DateTime
+  timestampFile String?
+  signatureFile String?
+  publicKey     String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relacionamento com User (quem coletou)
+  collectedByUser   User?   @relation(fields: [collectedBy], references: [id])
+
+  // Relacionamento com CustodyLog
+  custodyLogs CustodyLog[]
+
+  @@map("evidence")
+}
+
+model CustodyLog {
+  id         String   @id @default(uuid())
+  evidenceId String
+  action     String
+  actor      String
+  details    Json?
+  createdAt  DateTime @default(now())
+
+  // Relacionamento com Evidence
+  evidence Evidence @relation(fields: [evidenceId], references: [id], onDelete: Cascade)
+
+  // Relacionamento com User (quem executou a ação)
+  actorUser User? @relation(fields: [actor], references: [id])
+
+  @@map("custody_log")
+}
