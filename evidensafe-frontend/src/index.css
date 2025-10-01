@@ -6,7 +6,6 @@
 
 @layer base {
   :root {
-    /* Light theme colors */
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -27,20 +26,9 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 221.2 83.2% 53.3%;
     --radius: 0.5rem;
-
-    /* Custom gradient colors */
-    --gradient-primary: linear-gradient(135deg, hsl(221.2 83.2% 53.3%) 0%, hsl(221.2 83.2% 45%) 100%);
-    --gradient-secondary: linear-gradient(135deg, hsl(210 40% 96%) 0%, hsl(210 40% 90%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(210 40% 96%) 0%, hsl(215.4 16.3% 46.9% / 0.1) 100%);
-
-    /* Modern shadows */
-    --shadow-modern: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-modern-hover: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    --shadow-modern-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   }
 
   .dark {
-    /* Dark theme colors */
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     --card: 222.2 84% 4.9%;
@@ -60,256 +48,50 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 224.3 76.3% 94.1%;
-
-    /* Dark theme gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(217.2 91.2% 59.8%) 0%, hsl(217.2 91.2% 50%) 100%);
-    --gradient-secondary: linear-gradient(135deg, hsl(217.2 32.6% 17.5%) 0%, hsl(217.2 32.6% 12%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(217.2 32.6% 17.5%) 0%, hsl(215 20.2% 65.1% / 0.1) 100%);
-
-    /* Dark theme shadows */
-    --shadow-modern: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
-    --shadow-modern-hover: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
-    --shadow-modern-lg: 0 20px 25px -5px rgb(0 0 0 / 0.3), 0 8px 10px -6px rgb(0 0 0 / 0.3);
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
-@layer utilities {
-  /* Modern animations */
+@layer components {
   .animate-fade-in {
-    animation: fadeIn 0.5s ease-out;
+    animation: fadeIn 0.5s ease-in-out;
   }
 
   .animate-slide-up {
-    animation: slideUp 0.6s ease-out;
+    animation: slideUp 0.5s ease-out;
   }
 
   .animate-slide-down {
-    animation: slideDown 0.4s ease-out;
+    animation: slideDown 0.3s ease-out;
   }
 
-  .animate-scale-in {
-    animation: scaleIn 0.3s ease-out;
-  }
-
-  .animate-bounce-subtle {
-    animation: bounceSubtle 0.6s ease-out;
-  }
-
-  /* Hover effects */
   .hover-lift {
-    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+    transition: transform 0.2s ease-in-out;
   }
 
   .hover-lift:hover {
     transform: translateY(-2px);
   }
+}
 
-  /* Modern shadows */
+@layer utilities {
   .shadow-modern {
-    box-shadow: var(--shadow-modern);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   }
 
   .shadow-modern-hover {
-    box-shadow: var(--shadow-modern-hover);
-  }
-
-  .shadow-modern-lg {
-    box-shadow: var(--shadow-modern-lg);
-  }
-
-  /* Gradient backgrounds */
-  .bg-gradient-primary {
-    background: var(--gradient-primary);
-  }
-
-  .bg-gradient-secondary {
-    background: var(--gradient-secondary);
-  }
-
-  .bg-gradient-accent {
-    background: var(--gradient-accent);
-  }
-
-  /* Mobile-first responsive utilities */
-  .container-mobile {
-    @apply px-4 mx-auto;
-    max-width: 100%;
-  }
-
-  @media (min-width: 640px) {
-    .container-mobile {
-      @apply px-6;
-      max-width: 640px;
-    }
-  }
-
-  @media (min-width: 768px) {
-    .container-mobile {
-      @apply px-8;
-      max-width: 768px;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .container-mobile {
-      max-width: 1024px;
-    }
-  }
-
-  @media (min-width: 1280px) {
-    .container-mobile {
-      max-width: 1280px;
-    }
-  }
-
-  /* Mobile-first spacing */
-  .spacing-mobile {
-    @apply space-y-4;
-  }
-
-  @media (min-width: 768px) {
-    .spacing-mobile {
-      @apply space-y-6;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .spacing-mobile {
-      @apply space-y-8;
-    }
-  }
-
-  /* Mobile-first text sizes */
-  .text-responsive-sm {
-    @apply text-sm;
-  }
-
-  @media (min-width: 768px) {
-    .text-responsive-sm {
-      @apply text-base;
-    }
-  }
-
-  .text-responsive-base {
-    @apply text-base;
-  }
-
-  @media (min-width: 768px) {
-    .text-responsive-base {
-      @apply text-lg;
-    }
-  }
-
-  .text-responsive-lg {
-    @apply text-lg;
-  }
-
-  @media (min-width: 768px) {
-    .text-responsive-lg {
-      @apply text-xl;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .text-responsive-lg {
-      @apply text-2xl;
-    }
-  }
-
-  .text-responsive-xl {
-    @apply text-xl;
-  }
-
-  @media (min-width: 768px) {
-    .text-responsive-xl {
-      @apply text-2xl;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .text-responsive-xl {
-      @apply text-3xl;
-    }
-  }
-
-  /* Mobile-first grid layouts */
-  .grid-responsive {
-    @apply grid grid-cols-1 gap-4;
-  }
-
-  @media (min-width: 640px) {
-    .grid-responsive {
-      @apply grid-cols-2 gap-6;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .grid-responsive {
-      @apply grid-cols-3 gap-8;
-    }
-  }
-
-  .grid-responsive-2 {
-    @apply grid grid-cols-1 gap-4;
-  }
-
-  @media (min-width: 768px) {
-    .grid-responsive-2 {
-      @apply grid-cols-2 gap-6;
-    }
-  }
-
-  /* Mobile-first flex layouts */
-  .flex-responsive {
-    @apply flex flex-col gap-4;
-  }
-
-  @media (min-width: 768px) {
-    .flex-responsive {
-      @apply flex-row gap-6;
-    }
-  }
-
-  /* Mobile-first button sizes */
-  .btn-responsive {
-    @apply px-4 py-2 text-sm;
-  }
-
-  @media (min-width: 768px) {
-    .btn-responsive {
-      @apply px-6 py-3 text-base;
-    }
-  }
-
-  /* Mobile-first card padding */
-  .card-responsive {
-    @apply p-4;
-  }
-
-  @media (min-width: 768px) {
-    .card-responsive {
-      @apply p-6;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .card-responsive {
-      @apply p-8;
-    }
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   }
 }
 
-/* Keyframes for animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -338,95 +120,5 @@
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes bounceSubtle {
-  0%, 20%, 50%, 80%, 100% {
-    transform: translateY(0);
-  }
-  40% {
-    transform: translateY(-4px);
-  }
-  60% {
-    transform: translateY(-2px);
-  }
-}
-
-/* Mobile-first media queries for better touch targets */
-@media (max-width: 767px) {
-  /* Increase touch targets on mobile */
-  button, 
-  [role="button"], 
-  input[type="button"], 
-  input[type="submit"], 
-  input[type="reset"] {
-    min-height: 44px;
-    min-width: 44px;
-  }
-
-  /* Better spacing for mobile forms */
-  .form-mobile input,
-  .form-mobile select,
-  .form-mobile textarea {
-    @apply text-base; /* Prevents zoom on iOS */
-    min-height: 44px;
-  }
-
-  /* Mobile-friendly navigation */
-  .nav-mobile {
-    @apply fixed bottom-0 left-0 right-0 bg-background border-t;
-    z-index: 50;
-  }
-
-  /* Mobile-friendly modals */
-  .modal-mobile {
-    @apply fixed inset-x-4 bottom-4 top-auto;
-    max-height: 90vh;
-  }
-}
-
-/* Tablet optimizations */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .tablet-optimized {
-    @apply px-6 py-4;
-  }
-}
-
-/* Desktop optimizations */
-@media (min-width: 1024px) {
-  .desktop-optimized {
-    @apply px-8 py-6;
-  }
-}
-
-/* High DPI displays */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  .high-dpi-optimized {
-    /* Sharper borders and shadows for high DPI */
-    border-width: 0.5px;
-  }
-}
-
-/* Reduced motion preferences */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
 }
